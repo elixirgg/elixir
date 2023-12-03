@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+    font-family: Arial, sans-serif;
+    background-color: #1a1a1a; /* Dark background color */
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    color: #fff; /* Light text color */
+}
+
+.container {
+    text-align: center;
+    padding: 20px;
+    background-color: #2d2d2d; /* Darker container background color */
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.1); /* Light shadow */
+    margin-top: 20px;
+    max-width: 600px;
+    width: 100%;
+    word-wrap: break-word;
+}
+
+#pasteOutput {
+    white-space: pre-wrap;
+    max-height: 300px; /* Adjust as needed */
+    overflow-y: auto;
+    border: 1px solid #444; /* Darker border color */
+    padding: 10px;
+    border-radius: 6px;
+    margin-bottom: 10px;
+}
+
+#viewRawButton {
+    background-color: #4caf50;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+#viewRawButton:hover {
+    background-color: #45a049;
+}
+
+    </style>
+    <title>Paste Content</title>
+</head>
+<body>
+    <div class="container">
+        <h1>Paste Content</h1>
+        <div id="pasteOutput"></div>
+        <button id="viewRawButton" onclick="loadRawContent()">View Raw</button>
+    </div>
+    <script>
+        function loadRawContent() {
+            const pasteId = window.location.pathname.split('/').pop();
+            const rawContent = document.createElement('pre');
+
+            fetch(`/api/read_raw/${pasteId}`)
+                .then(response => response.text())
+                .then(data => {
+                    rawContent.textContent = data;
+                    const rawWindow = window.open('', '_blank');
+                    rawWindow.document.body.appendChild(rawContent);
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        // Display paste content when the page loads
+        document.getElementById('pasteOutput').textContent = '{{ paste_content|e }}';
+    </script>
+</body>
+</html>
